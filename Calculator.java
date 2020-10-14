@@ -183,7 +183,17 @@ public class Calculator implements ICalculator {
         
       } else if (popNum instanceof Double) { // if next number popped is double
         System.out.println("we got double for next value");
-        // gotta do double math
+        System.out.println("we have Double");
+        // Do double math
+        double popDblA = popNum.doubleValue();
+        double popDblB = stack.pop().doubleValue();
+        
+        popDblA = dblMath(popDblA, popDblB, operator);
+        
+        System.out.println("for the result of the operation we got :" + popDblA);
+        
+        stack.push(popDblA);
+        System.out.println(stack.peek() + " was added to the stack");
         
       } else {
         System.out.println("error 4");
