@@ -77,8 +77,7 @@ public class Calculator implements ICalculator {
         return Integer.parseInt(token[0]); // else return numeric int
         
       }
-
-        
+ 
 
     } else if (token.length > 1) {
       
