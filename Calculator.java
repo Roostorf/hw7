@@ -2,7 +2,6 @@ package edu.ics211.h07;
 
 import java.util.Stack;
 import org.apache.commons.lang3.ArrayUtils;
-//import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -120,7 +119,7 @@ public class Calculator implements ICalculator {
     System.out.println("popped number equals: " + popNum);    
     if (popNum instanceof Double) {
       System.out.println("we have Double");
-      // Do double math and add it to the stack
+      // Do double math and push it to the stack
       stack.push(dblMath(operator, stack, popNum));
       System.out.println(stack.peek() + " was added to the stack"); 
     }
@@ -129,7 +128,7 @@ public class Calculator implements ICalculator {
       int popIntA = popNum.intValue(); // if Number popped is integer, assign it to Int popA
       popNum = stack.pop(); // pop the top again
       if (popNum instanceof Integer) { // if next number popped is integer
-        // Do int Math
+        // Do int Math and push it to the stack
         System.out.println("we got integer for next value too!");
         popIntA = intMath(popIntA, popNum, operator);
         System.out.println("for the result of the operation we got :" + popIntA);     
@@ -138,7 +137,7 @@ public class Calculator implements ICalculator {
       } else if (popNum instanceof Double) { // if next number popped is double
         System.out.println("we got double for next value");
         System.out.println("we have Double");
-        // Do double math
+        // Do double math and push it to the stack
         stack.push(dblMath(operator, stack, popNum));
         System.out.println(stack.peek() + " was added to the stack");    
       } else {
@@ -210,7 +209,76 @@ public class Calculator implements ICalculator {
 
   @Override
   public Number preFixCalculate(String expression) throws InvalidExpressionException {
-    throw new UnsupportedOperationException();
+
+    Stack<String> opStack = new Stack<String>(); // create a stack for operators
+    String[] token =  expression.split(" ");    // split string into tolkens by split by space 
+    System.out.println("token array length :" + token.length);
+    
+    if (token.length == 1 && !NumberUtils.isParsable(token[0])) // If the array is only one, and it isn't a number
+    {
+      System.out.println("error A One Digit no Operator ");
+      throw new InvalidExpressionException();
+      
+    }
+    
+    if (token.length == 1 && NumberUtils.isParsable(token[0])) // If the array is only one, and it is a number
+    {
+      if (token[0].contains("."))  //If double
+      {
+        return Double.parseDouble(token[0]); // return numeric double value
+      } else {      
+        return Integer.parseInt(token[0]); // else return numeric int   
+      }
+    } else if (token.length > 1 
+        && (ArrayUtils.contains(token, "+")
+            || ArrayUtils.contains(token, "-")
+            || ArrayUtils.contains(token, "/")
+            || ArrayUtils.contains(token, "*"))) { // If the array is longer than one and contains an operator
+      
+      for (int i = 0; i < token.length; i++) // do this for array length 
+      {
+        System.out.println("token value is: " + token[i]);  
+        // if token is operator 
+        if ((token[i].equals("+") 
+            || token[i].equals("-") 
+            || token[i].equals("*") 
+            || token[i].equals("/"))) {
+          // if element is an operator push it to the operator stack
+          System.out.println("contains operator! Pushing it to the opStack");
+          opStack.push(token[i]);
+        }
+        // if numeric/parsable put it in a variable
+        if (NumberUtils.isParsable(token[i])) {
+          if (token[i].contains("."))  //If double
+          {
+            double dblA = Double.parseDouble(token[i]);
+            System.out.println("Double " + dblA + " was foud");
+
+          } else {
+            try {
+              int intA = Integer.parseInt(token[i]);
+              System.out.println("Integer " + intA + " was found");
+              
+            } catch (NumberFormatException nfe)
+            {
+              throw new NumberFormatException();
+            }  
+          }   
+        
+          
+          
+        }
+        // if next is numeric do maths
+        
+      }
+      
+    } else {
+      System.out.println("error B Contains invalid char or no Operator ");
+      throw new InvalidExpressionException();
+      
+    }
+
+    return 0;
   }
 
 }
